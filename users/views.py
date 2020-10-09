@@ -20,6 +20,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
+from rest_framework.pagination import PageNumberPagination
 
 
 def mail(request):
@@ -35,16 +36,18 @@ def mail(request):
     return HttpResponse(request.GET)
 
 
-class BasicPagination(PageNumberPagination):
-    page_size_query_param = 'limit'
+class TwoItemsSetPagination(PageNumberPagination):
+    page_size = 2
 
 
 class UserList(generics.ListCreateAPIView):
+    pagination_class = TwoItemsSetPagination
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def post(self, request, format=None):
         serializer = UserSerializer(data = request.data)
+
         if serializer.is_valid():
             serializer.save()
 
@@ -52,6 +55,17 @@ class UserList(generics.ListCreateAPIView):
                 {"status": "true", "message": "data Posted successfully.", "data": {"uuid": serializer.data['uuid']}},
                 status = status.HTTP_201_CREATED)
         return Response({'message': 'user with this email already exist', }, status = status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, **kwargs):
+        user = User.objects.all()
+        page = self.paginate_queryset(user)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+                                                                           many = True).data)
+        else:
+            serializer = ProfileSerializer(user, many = True)
+
+        return Response({"status": "true", "message": "data Retrieve successfully.", "data": serializer.data})
 
 
 class UserDetail(BaseDetails):
@@ -68,7 +82,7 @@ class ProfileDetail(BaseDetails):
 
 
 class ProfileList(generics.ListCreateAPIView):
-    pagination_class = BasicPagination
+    pagination_class = TwoItemsSetPagination
     queryset = Profile.objects.all()
 
     serializer_class = ProfileSerializer
@@ -93,13 +107,19 @@ class EducationDetail(BaseDetails):
 
 
 class EducationList(generics.ListCreateAPIView):
+    pagination_class = TwoItemsSetPagination
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    paginate_by = 2
 
     def get(self, request, **kwargs):
         education = Education.objects.all()
-        serializer = EducationSerializer(education, many = True)
+        page = self.paginate_queryset(education)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+                                                                           many = True).data)
+        else:
+
+            serializer = EducationSerializer(education, many = True)
         return Response({"status": "true", "message": "data Retrieve successfully.", "data": serializer.data})
 
 
@@ -110,22 +130,34 @@ class ExperienceDetail(BaseDetails):
 
 
 class ExperienceList(generics.ListCreateAPIView):
+    pagination_class = TwoItemsSetPagination
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
 
     def get(self, request, **kwargs):
         experience = Experience.objects.all()
-        serializer = ExperienceSerializer(experience, many = True)
+        page = self.paginate_queryset(experience)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+                                                                           many = True).data)
+        else:
+            serializer = ExperienceSerializer(experience, many = True)
         return Response({"status": "true", "message": "data Retrieve successfully.", "data": serializer.data})
 
 
 class FeedList(generics.RetrieveUpdateDestroyAPIView):
+    pagination_class = TwoItemsSetPagination
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
     def get(self, request, **kwargs):
         fed = Feed.objects.all()
-        serializer = FeedSerializer(fed, many = True)
+        page = self.paginate_queryset(fed)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+                                                                           many = True).data)
+        else:
+            serializer = FeedSerializer(fed, many = True)
         return Response({"status": "true", "message": "data Retrieve successfully.", "data": serializer.data})
 
 
@@ -136,12 +168,18 @@ class FeedDetail(BaseDetails):
 
 
 class SkillsList(generics.RetrieveUpdateDestroyAPIView):
+    pagination_class = TwoItemsSetPagination
     queryset = Skills.objects.all()
     serializer_class = FeedSerializer
 
     def get(self, request, **kwargs):
         skill = Skills.objects.all()
-        serializer = SkillsSerializer(skill, many = True)
+        page = self.paginate_queryset(skill)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+                                                                           many = True).data)
+        else:
+            serializer = SkillsSerializer(skill, many = True)
         return Response({"status": "true", "message": "data Retrieve successfully.", "data": serializer.data})
 
 
