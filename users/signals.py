@@ -38,8 +38,20 @@ def save_education(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender = Feed)
+def create_or_update_user_feed(sender, instance, created, **kwargs):
+    if created:
+        Feed.objects.create(user = instance)
+
+
+@receiver(post_save, sender = Feed)
 def save_feed(sender, instance, **kwargs):
     Feed.objects.save()
+
+
+@receiver(post_save, sender = Skills)
+def create_or_update_user_skill(sender, instance, created, **kwargs):
+    if created:
+        Skills.objects.create(user = instance)
 
 
 @receiver(post_save, sender = Skills)

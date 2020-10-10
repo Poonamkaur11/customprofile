@@ -42,8 +42,6 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-
-
 class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete = models.CASCADE, default = True)
     profile_pic = models.ImageField(default = 'None', upload_to = 'profile_pics', blank = True, null = True)
@@ -84,7 +82,7 @@ class Feed(BaseModel):
 
 class Skills(BaseModel):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
-    skills = models.TextField(blank = True, default = False)
+    skills = models.TextField(default = False)
 
     def __str__(self):
         return f'{self.user.email}'
