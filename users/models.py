@@ -1,8 +1,8 @@
 from datetime import timedelta
-
+import django_filters
 import jwt
 from django.db import models
-
+from django_filters import rest_framework as filters
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 # from datetime import datetime
@@ -22,6 +22,7 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
 
 
 class User(BaseModel, AbstractBaseUser, PermissionsMixin):
@@ -47,6 +48,8 @@ class Profile(BaseModel):
     profile_pic = models.ImageField(default = 'None', upload_to = 'profile_pics', blank = True, null = True)
     bio = models.CharField(default = None, max_length = 500, null = True)
     headline = models.CharField(default = None, max_length = 100, null = True)
+    gender = models.CharField(max_length = 1, blank = True, null = True)
+    city = models.CharField(max_length = 20, blank = True, null = True)
     country_code = models.CharField(max_length = 100, null = True, blank = True)
     date_of_birth = models.DateField(verbose_name = 'date_of_birth', blank = True, default = None, null = True)
 
@@ -56,8 +59,8 @@ class Profile(BaseModel):
 
 class Education(BaseModel):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
-    highest_education = models.CharField(max_length = 100, default = False)
-    highest_education_academy = models.CharField(max_length = 100, default = False)
+    degree = models.CharField(max_length = 100, default = False)
+    university = models.CharField(max_length = 100, default = False)
 
     def __str__(self):
         return f'{self.user.email}'
@@ -66,7 +69,9 @@ class Education(BaseModel):
 class Experience(BaseModel):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     experience = models.CharField(blank = True, max_length = 100, default = False)
-    current_designation = models.CharField(max_length = 100, default = False)
+    title = models.CharField(max_length = 100, default = False)
+    project = models.TextField(max_length = 200, default = False)
+    company = models.CharField(max_length = 200, default = False)
 
     def __str__(self):
         return f'{self.user.email}'
@@ -86,3 +91,12 @@ class Skills(BaseModel):
 
     def __str__(self):
         return f'{self.user.email}'
+
+
+class ProfileFilter(filters.FilterSet):
+    bio = django_filters.CharFilter(lookup_expr = 'iexact')
+    city = django_filters.CharFilter(lookup_expr = 'iexact')
+
+    class Meta:
+        model = Profile
+        fields = ['bio', 'city']

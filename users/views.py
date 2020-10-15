@@ -1,27 +1,20 @@
-from django.shortcuts import render, redirect
-from rest_framework import generics, permissions
-from rest_framework import status
+import rest_framework.mixins as mixin
+from django_filters.rest_framework import DjangoFilterBackend
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-from users.pagination import PaginationHandlerMixin
+
 from users.models import User, Profile, Education, Experience, Feed, Skills
 from users.serializers import UserSerializer, ProfileSerializer, EducationSerializer, ExperienceSerializer, \
     FeedSerializer, SkillsSerializer
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from django.http import Http404
-from rest_framework import status
-from django.http import HttpResponse
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
 from .Base_views import BaseViewSet
-import uuid
-from django.core.mail import send_mail
-from django.conf import settings
-from django.core.mail import send_mail
-from django.conf import settings
-from django.core.paginator import Paginator
-from rest_framework.pagination import PageNumberPagination
-from rest_framework import viewsets
+from rest_framework import (viewsets, filters)
+from filters.mixins import (
+    FiltersMixin,
+)
+from url_filter.integrations.drf import DjangoFilterBackend
 
 
 def mail(request):
@@ -47,18 +40,35 @@ class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     head = "user"
+    search_fields = ('name', 'email', 'Profile__gender')
+
+
+class ProfileFilter(DjangoFilterBackend):
+    class Meta:
+        model = Profile
+        fields = ['bio', 'city']
 
 
 class ProfileViewSet(BaseViewSet):
     pagination_class = TwoItemsSetPagination
+
+    ordering_fields = ('user', 'bio')
+
+    head = "profile"
+
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend,]
+    filter_fields = ('bio', 'city')
+    search_fields = ('bio', 'city')
     queryset = Profile.objects.all()
     model_class = Profile
     serializer_class = ProfileSerializer
-    head = "profile"
 
 
 class EducationViewSet(BaseViewSet):
     model_class = Education
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, ]
+    filter_fields = ('university', 'degree')
+    search_fields = ('university', 'degree')
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
     pagination_class = TwoItemsSetPagination
@@ -67,6 +77,9 @@ class EducationViewSet(BaseViewSet):
 
 class ExperienceViewSet(BaseViewSet):
     model_class = Experience
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend,]
+    filter_fields = ('title', 'company')
+    search_fields = ('title', 'company')
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
     pagination_class = TwoItemsSetPagination

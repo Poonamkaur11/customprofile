@@ -1,3 +1,5 @@
+import profile
+
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -61,3 +63,17 @@ class EducationSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
         extra_fields = 'profile', 'experience', 'education', 'uuid', 'feed', 'skills'''
+
+
+class GlobalSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+
+    def to_native(self, obj):
+        if isinstance(obj, Profile):
+            serializer = ProfileSerializer(obj)
+        elif isinstance(obj, User):
+            serializer = UserSerializer(obj)
+        else:
+            raise Exception("Neither a Profile nor User instance!")
+        return serializer.data

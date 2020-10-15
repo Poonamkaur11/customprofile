@@ -18,9 +18,6 @@ router.register(r'experience', views.ExperienceViewSet)
 router.register(r'profile', views.ProfileViewSet)
 router.register(r'user', views.UserViewSet)
 
-
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
@@ -34,6 +31,7 @@ urlpatterns = [
     url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email,
         name = 'account_confirm_email'),
 
+
     path('', include(router.urls)),
 
 ]
@@ -45,7 +43,7 @@ urlpatterns = [
 #    path('education/', views.EducationViewSet.as_view({'get': 'list', 'post': 'create'}), name = 'education-list'),
 #    path('user/', views.UserViewSet.as_view({'get': 'list', 'post': 'create'}), name = 'User-list'),
 #    path('feed/', views.FeedViewSet.as_view({'get': 'list', 'post': 'create'}), name = 'Feed-list'),
-    #    path('skills/', views.SkillsViewSet.as_view({'get': 'list', 'post': 'create'}), name = 'Skills-list'),
+#    path('skills/', views.SkillsViewSet.as_view({'get': 'list', 'post': 'create'}), name = 'Skills-list'),
 
 #    path('profile/', views.ProfileViewSet.as_view({'get': 'list', 'post': 'create'}), name = 'profile-list'),
 #    path('education/<uuid:pk>/', views.EducationViewSet.as_view(
@@ -58,4 +56,4 @@ urlpatterns = [
 #        {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name = 'profile-detail'),
 #    path('feed/<uuid:pk>/', views.FeedViewSet.as_view(
 #        {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name = 'Feed-detail'),
-    #    path('skills/<uuid:pk>/', views.SkillsViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name = 'Skills-detail'),
+#    path('skills/<uuid:pk>/', views.SkillsViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name = 'Skills-detail'),
