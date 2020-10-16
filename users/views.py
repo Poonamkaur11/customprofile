@@ -1,5 +1,11 @@
+from datetime import datetime
+from time import timezone
+
+import django_filters
+
 import rest_framework.mixins as mixin
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import DateFilter, DateRangeFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -40,7 +46,9 @@ class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     head = "user"
-    search_fields = ('name', 'email', 'Profile__gender')
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, ]
+    search_fields = ('name', 'email', 'Profile__gender', 'created_at')
+    filter_fields = ('name', 'email', 'Profile__gender')
 
 
 class ProfileFilter(DjangoFilterBackend):
@@ -56,9 +64,9 @@ class ProfileViewSet(BaseViewSet):
 
     head = "profile"
 
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend,]
-    filter_fields = ('bio', 'city')
-    search_fields = ('bio', 'city')
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, ]
+    filter_fields = ('bio', 'city', 'created_at')
+    search_fields = ('bio', 'city', 'created_at')
     queryset = Profile.objects.all()
     model_class = Profile
     serializer_class = ProfileSerializer
@@ -66,19 +74,21 @@ class ProfileViewSet(BaseViewSet):
 
 class EducationViewSet(BaseViewSet):
     model_class = Education
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend, ]
-    filter_fields = ('university', 'degree')
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, OrderingFilter]
+    filter_fields = ('university', 'degree', 'created_at', 'start_date', 'end_date')
     search_fields = ('university', 'degree')
+
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
     pagination_class = TwoItemsSetPagination
+    ordering_fields = "__all__"
     head = "education"
 
 
 class ExperienceViewSet(BaseViewSet):
     model_class = Experience
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend,]
-    filter_fields = ('title', 'company')
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_fields = ('title', 'company', 'created_at', 'start_date', 'end_date')
     search_fields = ('title', 'company')
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
@@ -88,10 +98,12 @@ class ExperienceViewSet(BaseViewSet):
 
 class FeedViewSet(BaseViewSet):
     model_class = Feed
-
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
     pagination_class = TwoItemsSetPagination
+    filter_fields = ('created_at', 'feed')
+    search_fields = ('feed', 'created_at')
     head = "feed"
 
 
@@ -116,7 +128,9 @@ class SkillsViewSet(BaseViewSet):
       """
 
     model_class = Skills
-
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_fields = ('skills', 'created_at')
+    search_fields = ('skills', 'created_at')
     queryset = Skills.objects.all()
     serializer_class = SkillsSerializer
     pagination_class = TwoItemsSetPagination

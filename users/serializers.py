@@ -1,5 +1,6 @@
 import profile
 
+import django_filters
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.http import HttpResponse

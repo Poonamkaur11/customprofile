@@ -61,6 +61,8 @@ class Education(BaseModel):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     degree = models.CharField(max_length = 100, default = False)
     university = models.CharField(max_length = 100, default = False)
+    start_date = models.DateField(default = None)
+    end_date = models.DateField(default = None)
 
     def __str__(self):
         return f'{self.user.email}'
@@ -72,6 +74,8 @@ class Experience(BaseModel):
     title = models.CharField(max_length = 100, default = False)
     project = models.TextField(max_length = 200, default = False)
     company = models.CharField(max_length = 200, default = False)
+    start_date = models.DateField(default = None)
+    end_date = models.DateField(default = None)
 
     def __str__(self):
         return f'{self.user.email}'
@@ -93,10 +97,3 @@ class Skills(BaseModel):
         return f'{self.user.email}'
 
 
-class ProfileFilter(filters.FilterSet):
-    bio = django_filters.CharFilter(lookup_expr = 'iexact')
-    city = django_filters.CharFilter(lookup_expr = 'iexact')
-
-    class Meta:
-        model = Profile
-        fields = ['bio', 'city']

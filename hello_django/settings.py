@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'generics',
     'drf_multiple_model',
+    'crispy_forms'
 
 ]
 

@@ -1,5 +1,9 @@
+from datetime import timezone
+
+import django_filters
 from django.core.mail import send_mail
 from django.http import HttpResponse, request
+from django_filters import DateFilter, DateRangeFilter
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -23,6 +27,7 @@ class BaseViewSet(viewsets.ModelViewSet):
         return obj
 
     def list(self, request, *args, **kwargs):
+
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -66,6 +71,8 @@ class BaseViewSet(viewsets.ModelViewSet):
             "data": serializer.data
         }
         )
+
+
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
