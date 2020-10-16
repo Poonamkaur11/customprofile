@@ -46,9 +46,10 @@ class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     head = "user"
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend, ]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend,  OrderingFilter]
     search_fields = ('name', 'email', 'Profile__gender', 'created_at')
     filter_fields = ('name', 'email', 'Profile__gender')
+    ordering_fields = "__all__"
 
 
 class ProfileFilter(DjangoFilterBackend):
@@ -64,9 +65,10 @@ class ProfileViewSet(BaseViewSet):
 
     head = "profile"
 
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend, ]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, OrderingFilter]
     filter_fields = ('bio', 'city', 'created_at')
     search_fields = ('bio', 'city', 'created_at')
+    ordering_fields = "__all__"
     queryset = Profile.objects.all()
     model_class = Profile
     serializer_class = ProfileSerializer
@@ -87,9 +89,10 @@ class EducationViewSet(BaseViewSet):
 
 class ExperienceViewSet(BaseViewSet):
     model_class = Experience
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, OrderingFilter]
     filter_fields = ('title', 'company', 'created_at', 'start_date', 'end_date')
     search_fields = ('title', 'company')
+    ordering_fields = "__all__"
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
     pagination_class = TwoItemsSetPagination
@@ -98,12 +101,13 @@ class ExperienceViewSet(BaseViewSet):
 
 class FeedViewSet(BaseViewSet):
     model_class = Feed
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, OrderingFilter]
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
     pagination_class = TwoItemsSetPagination
     filter_fields = ('created_at', 'feed')
     search_fields = ('feed', 'created_at')
+    ordering_fields = "__all__"
     head = "feed"
 
 
@@ -128,9 +132,10 @@ class SkillsViewSet(BaseViewSet):
       """
 
     model_class = Skills
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, OrderingFilter]
     filter_fields = ('skills', 'created_at')
     search_fields = ('skills', 'created_at')
+    ordering_fields = "__all__"
     queryset = Skills.objects.all()
     serializer_class = SkillsSerializer
     pagination_class = TwoItemsSetPagination
