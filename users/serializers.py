@@ -8,12 +8,10 @@ from rest_auth.tests import settings
 from rest_framework import serializers, status
 from rest_framework.response import Response
 
-from users.models import Profile, Experience, Education, User, Feed, Skills
+from users.models import Profile, Experience, Education, User, Feed, Skills, FollowRequest
 
 
 class UserSerializer(serializers.ModelSerializer):
-    uuid = serializers.UUIDField(required = True, read_only = False)
-
     class Meta:
         model = User
         fields = "__all__"
@@ -53,28 +51,28 @@ class EducationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-'''class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(required = True)
-    experience = ExperienceSerializer(required = True)
-    education = EducationSerializer(required = True)
-    feed = FeedSerializer(required = True)
-    skills = SkillsSerializer(required = True)
+'''class FollowingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserFollowing
+        fields = "__all__"
+
+
+class FollowersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserFollowing
+        fields = "__all__"'''
+
+
+class FollowRequestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FollowRequest
+        fields = '__all__'
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user_profile = ProfileSerializer()
 
     class Meta:
         model = User
-        fields = '__all__'
-        extra_fields = 'profile', 'experience', 'education', 'uuid', 'feed', 'skills'''
-
-
-class GlobalSearchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-
-    def to_native(self, obj):
-        if isinstance(obj, Profile):
-            serializer = ProfileSerializer(obj)
-        elif isinstance(obj, User):
-            serializer = UserSerializer(obj)
-        else:
-            raise Exception("Neither a Profile nor User instance!")
-        return serializer.data
+        fields = ["email", "user_profile", "last_login"]

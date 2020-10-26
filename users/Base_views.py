@@ -23,7 +23,7 @@ class BaseViewSet(viewsets.ModelViewSet):
 
     def get_object(self, pk=None):
         queryset = self.get_queryset()
-        obj = queryset.get(pk = self.kwargs['pk'])
+        obj = queryset.get(pk=self.kwargs['pk'])
         return obj
 
     def list(self, request, *args, **kwargs):
@@ -32,7 +32,7 @@ class BaseViewSet(viewsets.ModelViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many = True)
+            serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response({
                 "status": "true",
                 "message": "data listed successfully.",
@@ -40,65 +40,63 @@ class BaseViewSet(viewsets.ModelViewSet):
             }
             )
 
-        serializer = self.get_serializer(queryset, many = True)
+        serializer = self.get_serializer(queryset, many=True)
         return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
 
     def create(self, request, pk=None, *args, **kwargs):
 
-        serializer = self.serializer_class(data = request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
             return Response(
-                data = {
+                data={
                     "status": True,
                     "message": f"{self.head} created successfully",
                     "data": serializer.data
                 })
-        return Response(data = {
+        return Response(data={
             "status": False,
             "message": f"{self.head} created failed",
             "data": serializer.errors
         },
-            status = status.HTTP_400_BAD_REQUEST)
+            status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        return Response(data = {
+        return Response(data={
             "status": True,
             "message": f"{self.head} data retrieved successfully",
             "data": serializer.data
         }
         )
 
-
-
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.serializer_class(instance, data = request.data, partial = True)
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
             self.perform_update(serializer)
             return Response(
-                data = {
+                data={
                     "status": True,
                     "message": f"{self.head} data updated successfully",
                     "data": serializer.data
                 })
-        return Response(data = {
+        return Response(data={
             "status": False,
             "message": f"{self.head} update failed",
             "data": serializer.errors
         },
-            status = status.HTTP_400_BAD_REQUEST)
+            status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk, format=None):
         obj = self.get_object(pk)
         obj.delete()
-        return Response(data = {
+        return Response(data={
             "status": True,
             "message": f"{self.head} deleted successfully",
             "data": {}
         },
-            status = status.HTTP_200_OK)
+            status=status.HTTP_200_OK)

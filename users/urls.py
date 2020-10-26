@@ -6,7 +6,8 @@ from django.contrib import admin
 from rest_auth.registration.views import VerifyEmailView
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import mail, SkillsViewSet
+#from .views import mail, SkillsViewSet, Follow, Unfollow, ListFollowers, ListFollowing, SendFollowRequest, \
+#    AcceptFollowRequest
 from rest_framework import routers
 
 app_name = 'users'
@@ -25,12 +26,18 @@ urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     # url(r'^account/', include('allauth.urls')),
-    re_path(r'^account-confirm-email/$', VerifyEmailView.as_view(), name = 'account_email_verification_sent'),
-    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(), name = 'account_confirm_email'),
+    re_path(r'^account-confirm-email/$', VerifyEmailView.as_view(), name='account_email_verification_sent'),
+    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(), name='account_confirm_email'),
 
     url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email,
-        name = 'account_confirm_email'),
+        name='account_confirm_email'),
 
+    path('follow/<uuid:user_id>/', views.Follow.as_view(), name='follow'),
+    path('unfollow/<uuid:user_id>/', views.Unfollow.as_view(), name='unfollow'),
+    path('followers/', views.ListFollowers.as_view(), name='followers'),
+    path('following/', views.ListFollowing.as_view(), name='following'),
+    path('followrequests/<uuid:user_id>/', views.SendFollowRequest.as_view(), name='send-follow-request'),
+    path('followrequests/accept/<uuid:request_id>/', views.AcceptFollowRequest.as_view(), name='accept-follow-request'),
 
     path('', include(router.urls)),
 
