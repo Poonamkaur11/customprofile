@@ -8,7 +8,7 @@ from rest_auth.tests import settings
 from rest_framework import serializers, status
 from rest_framework.response import Response
 
-from users.models import Profile, Experience, Education, User, Feed, Skills, FollowRequest
+from users.models import Profile, Experience, Education, User, Feed, Skills, FriendRequest
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -63,10 +63,9 @@ class FollowersSerializer(serializers.ModelSerializer):
         fields = "__all__"'''
 
 
-class FollowRequestSerializer(serializers.ModelSerializer):
-
+class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FollowRequest
+        model = FriendRequest
         fields = '__all__'
 
 
@@ -75,4 +74,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "user_profile", "last_login"]
+        fields = "__all__"

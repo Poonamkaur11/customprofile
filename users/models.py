@@ -4,6 +4,7 @@ import jwt
 import self as self
 from django.db import models
 from django.dispatch import receiver
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -12,7 +13,7 @@ from django.contrib.auth.models import PermissionsMixin
 import uuid
 # from django.conf import settings
 from django.db.models.functions import datetime
-
+from notifications.signals import notify
 from hello_django import settings
 from .managers import UserManager
 
@@ -45,7 +46,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=True, related_name="user_profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile")
     profile_pic = models.ImageField(default='None', upload_to='profile_pics', blank=True, null=True)
     bio = models.CharField(default=None, max_length=500, null=True)
     headline = models.CharField(default=None, max_length=100, null=True)
@@ -54,7 +55,6 @@ class Profile(BaseModel):
     country_code = models.CharField(max_length=100, null=True, blank=True)
     date_of_birth = models.DateField(verbose_name='date_of_birth', blank=True, default=None, null=True)
     follow = models.ManyToManyField(to=User, related_name="followed_by", )
-
 
 
     def __str__(self):
@@ -101,28 +101,30 @@ class Skills(BaseModel):
         return f'{self.user.email}'
 
 
-class FollowRequest(BaseModel):
-    pending = "pending"
-    friends = "active"
+class FriendRequest(BaseModel):
+    PENDING = "pending"
+    FRIENDS = "friends"
     status = models.CharField(
         verbose_name="status",
         max_length=100,
         choices=(
-            (pending, "pending"),
-            (friends, "friends"),
+            (PENDING, PENDING),
+            (FRIENDS, FRIENDS),
         ),
-        default=pending
+        default=PENDING
     )
     sender = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="sent_follow_request"
+        related_name="sent_friend_request"
     )
     receiver = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="received_follow_request"
+        related_name="received_friend_request"
     )
 
+
     def __str__(self):
-        return f"{self.status}"
+        return f"{self.sender} sent friend request to {self.receiver}. Status: {self.status}"
+

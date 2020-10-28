@@ -1,7 +1,9 @@
+import uuid
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import User, Profile, Experience, Education, Feed, Skills, FollowRequest
+from .models import User, Profile, Experience, Education, Feed, Skills, FollowRequest, Follower, FriendRequest
 
 
 @receiver(post_save, sender=Profile)
@@ -59,20 +61,19 @@ def save_skills(sender, instance, **kwargs):
     Skills.objects.save()
 
 
-@receiver(post_save, sender=FollowRequest
-          )
-def create_or_update_user_followrequest(sender, instance, created, **kwargs):
+@receiver(post_save, sender=FriendRequest)
+def create_or_update_user_skill(sender, instance, created, **kwargs):
     if created:
-        FollowRequest.objects.create(user=instance)
+        FriendRequest.objects.create(user=instance)
 
 
-@receiver(post_save, sender=FollowRequest)
-def save_follow(sender, instance, **kwargs):
-    FollowRequest.objects.save()
+@receiver(post_save, sender=FriendRequest)
+def save_skills(sender, instance, **kwargs):
+    FriendRequest.objects.save()
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, **kwargs):
-    profile, created = Profile.objects.get_or_create(parent_user=instance)
-    if created:
-        profile.save()
+
+
+
+
+

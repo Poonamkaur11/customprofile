@@ -15,6 +15,8 @@ from hello_django import settings
 import rest_framework.mixins as mixin
 from url_filter.integrations.drf import DjangoFilterBackend
 
+from users.models import User
+
 
 class BaseViewSet(viewsets.ModelViewSet):
     model_class = None
@@ -100,3 +102,5 @@ class BaseViewSet(viewsets.ModelViewSet):
             "data": {}
         },
             status=status.HTTP_200_OK)
+
+

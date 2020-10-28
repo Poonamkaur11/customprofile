@@ -1,14 +1,12 @@
-from allauth.account import views
-from allauth.account.views import confirm_email, PasswordResetView
+from allauth.account.views import confirm_email
 from django.conf.urls import url
-from django.urls import path, include, re_path
 from django.contrib import admin
+from django.urls import path, include, re_path
 from rest_auth.registration.views import VerifyEmailView
-from . import views
 from rest_framework.routers import DefaultRouter
-#from .views import mail, SkillsViewSet, Follow, Unfollow, ListFollowers, ListFollowing, SendFollowRequest, \
-#    AcceptFollowRequest
-from rest_framework import routers
+
+from . import views
+from .views import Follow
 
 app_name = 'users'
 router = DefaultRouter()
@@ -32,12 +30,12 @@ urlpatterns = [
     url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email,
         name='account_confirm_email'),
 
-    path('follow/<uuid:user_id>/', views.Follow.as_view(), name='follow'),
+    path('follow/<uuid:user_id>/', views.Follow.as_view(), name="follow"),
     path('unfollow/<uuid:user_id>/', views.Unfollow.as_view(), name='unfollow'),
     path('followers/', views.ListFollowers.as_view(), name='followers'),
     path('following/', views.ListFollowing.as_view(), name='following'),
-    path('followrequests/<uuid:user_id>/', views.SendFollowRequest.as_view(), name='send-follow-request'),
-    path('followrequests/accept/<uuid:request_id>/', views.AcceptFollowRequest.as_view(), name='accept-follow-request'),
+    path('friendrequests/<uuid:user_id>/', views.SendFriendRequest.as_view(), name='send-friend-request'),
+    path('friendrequests/accept/<uuid:request_id>/', views.AcceptFriendRequest.as_view(), name='accept-friend-request'),
 
     path('', include(router.urls)),
 
