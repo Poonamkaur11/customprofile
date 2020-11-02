@@ -221,6 +221,24 @@ class SendFriendRequest(GenericAPIView):
         return HttpResponse(f"You can't send a friend request to yourself")
 
 
+# GET: List all open friend requests from others
+class ShowPendingReceivedFriendRequests(ListAPIView):
+    serializer_class = FriendRequestSerializer
+
+    def get_queryset(self):
+        received_requests = FriendRequest.objects.filter(status="pending", receiver_id=self.request.user.uuid)
+        return received_requests
+
+
+# GET: List all my pending friend requests
+class ShowPendingSentFriendRequests(ListAPIView):
+    serializer_class = FriendRequestSerializer
+
+    def get_queryset(self):
+        sent_requests = FriendRequest.objects.filter(status="pending", sender_id=self.request.user.uuid)
+        return sent_requests
+
+
 class AcceptFriendRequest(GenericAPIView):
     serializer_class = FriendRequestSerializer
     lookup_url_kwarg = "request_id"
