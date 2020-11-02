@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import User, Profile, Experience, Education, Feed, Skills, FollowRequest, Follower, FriendRequest
+from .models import User, Profile, Experience, Education, Feed, Skills, FriendRequest
 
 
 @receiver(post_save, sender=Profile)
@@ -51,7 +51,7 @@ def save_feed(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Skills)
-def create_or_update_user_skill(sender, instance, created, **kwargs):
+def create_or_update_user_skills(sender, instance, created, **kwargs):
     if created:
         Skills.objects.create(user=instance)
 
@@ -62,13 +62,13 @@ def save_skills(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=FriendRequest)
-def create_or_update_user_skill(sender, instance, created, **kwargs):
+def create_or_update_user_friend_request(sender, instance, created, **kwargs):
     if created:
         FriendRequest.objects.create(user=instance)
 
 
 @receiver(post_save, sender=FriendRequest)
-def save_skills(sender, instance, **kwargs):
+def save_friend_request(sender, instance, **kwargs):
     FriendRequest.objects.save()
 
 

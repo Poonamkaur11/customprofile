@@ -35,6 +35,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     spouse_name = models.CharField(blank=True, max_length=100)
+    public = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -55,7 +56,6 @@ class Profile(BaseModel):
     country_code = models.CharField(max_length=100, null=True, blank=True)
     date_of_birth = models.DateField(verbose_name='date_of_birth', blank=True, default=None, null=True)
     follow = models.ManyToManyField(to=User, related_name="followed_by", )
-
 
     def __str__(self):
         return f'{self.user.email}'
@@ -124,7 +124,5 @@ class FriendRequest(BaseModel):
         related_name="received_friend_request"
     )
 
-
     def __str__(self):
         return f"{self.sender} sent friend request to {self.receiver}. Status: {self.status}"
-
