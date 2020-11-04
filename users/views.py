@@ -185,22 +185,26 @@ class FollowPrivate(ObjectMultipleModelAPIView):
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        accepted_requests = self.request.user.received_friend_request.all().filter(status="friends")
+        friends = [fr.sender for fr in accepted_requests]
+        return friends
+
     def patch(self, request, *args, **kwargs):
         user_to_follow_id = self.kwargs.get("user_id")
         user_to_follow = User.objects.get(uuid=user_to_follow_id)
-        if user_to_follow not in self.request.user.user_profile.follow.all():
-            if self.request.user.user_friend_request.FriendRequest.status is "friends":
-                user_to_follow.followed_by.add(self.request.user.user_profile)
-                sendmail = EmailMessage(
-                    subject="New Follower",
-                    body=f"Hi {user_to_follow.email}\n\n{self.request.user.email} is now following you!",
-                    from_email="pkeb1190@gmail.com",
-                    to=[f"{user_to_follow.email}"],
-                )
-                sendmail.send()
-                return HttpResponse(f"{self.request.user.email} follows {user_to_follow.email}")
+        if user_to_follow.received_friend_request.all().filter(status="friends"):
+            user_to_follow.followed_by.add(self.request.user.user_profile)
+            sendmail = EmailMessage(
+                subject="New Follower",
+                body=f"Hi {user_to_follow.email}\n\n{self.request.user.email} is now following you!",
+                from_email="pkeb1190@gmail.com",
+                to=[f"{user_to_follow.email}"],
+            )
+            sendmail.send()
+            return HttpResponse(f"{self.request.user.email} follows {user_to_follow.email}")
 
-        return HttpResponse(f"{self.request.user.email} is already following {user_to_follow.email}")
+        return HttpResponse(f"{self.request.user.email} is not friend to  {user_to_follow.email}")
 
 
 class Unfollow(DestroyAPIView):

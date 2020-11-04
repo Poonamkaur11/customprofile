@@ -37,7 +37,6 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     spouse_name = models.CharField(blank=True, max_length=100)
     public = models.BooleanField(verbose_name="public", default=True)
 
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -57,8 +56,6 @@ class Profile(BaseModel):
     country_code = models.CharField(max_length=100, null=True, blank=True)
     date_of_birth = models.DateField(verbose_name='date_of_birth', blank=True, default=None, null=True)
     follow = models.ManyToManyField(to=User, related_name="followed_by", )
-
-
 
     def __str__(self):
         return f'{self.user.email}'
@@ -105,8 +102,6 @@ class Skills(BaseModel):
 
 
 class FriendRequest(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_friend_request", default=True)
-
     PENDING = "pending"
     FRIENDS = "friends"
     status = models.CharField(
