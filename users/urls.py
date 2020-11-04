@@ -6,7 +6,8 @@ from rest_auth.registration.views import VerifyEmailView
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import Follow, ShowPendingReceivedFriendRequests, ShowPendingSentFriendRequests, AcceptFriendRequest
+from .views import Follow, ShowPendingReceivedFriendRequests, ShowPendingSentFriendRequests, AcceptFriendRequest, \
+    ShowFriends
 
 app_name = 'users'
 router = DefaultRouter()
@@ -31,6 +32,7 @@ urlpatterns = [
         name='account_confirm_email'),
 
     path('follow/<uuid:user_id>/', views.Follow.as_view(), name="follow"),
+    path('follow/private/<uuid:user_id>/', views.FollowPrivate.as_view(), name="follow_private"),
     path('unfollow/<uuid:user_id>/', views.Unfollow.as_view(), name='unfollow'),
     path('followers/', views.ListFollowers.as_view(), name='followers'),
     path('following/', views.ListFollowing.as_view(), name='following'),
@@ -38,6 +40,7 @@ urlpatterns = [
     path('friendrequests/', ShowPendingReceivedFriendRequests.as_view(), name="show-pending-received-fr-request"),
     path('friendrequests/pending/', ShowPendingSentFriendRequests.as_view(), name="show-pending-sent-fr-request"),
     path('friendrequests/accept/<uuid:request_id>/', AcceptFriendRequest.as_view(), name="accept-friend-request"),
+    path('friends/', ShowFriends.as_view(), name="show-all-friends"),
 
 
 

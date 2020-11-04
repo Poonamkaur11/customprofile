@@ -75,3 +75,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
+
+
+class UserRequestSerializer(serializers.ModelSerializer):
+    user_friend_request = FriendRequestSerializer()
+
+    class Meta:
+        model = User
+        fields = "__all__"
