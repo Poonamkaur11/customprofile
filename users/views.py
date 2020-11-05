@@ -229,6 +229,22 @@ class ShowFriends(ListAPIView):
         friends = [fr.sender for fr in accepted_requests]
         return friends
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                "status": "true",
+                "message": "data listed successfully.",
+                "data": serializer.data
+            }
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
+
 
 # GET: List of all the followers
 class ListFollowers(ListAPIView):
@@ -240,6 +256,22 @@ class ListFollowers(ListAPIView):
         followers_profile = self.request.user.followed_by.all()
         return [up.user for up in followers_profile]
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                "status": "true",
+                "message": "data listed successfully.",
+                "data": serializer.data
+            }
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
+
 
 # GET: List of all the people the user is following
 class ListFollowing(ListAPIView):
@@ -250,6 +282,22 @@ class ListFollowing(ListAPIView):
     def get_queryset(self):
         following_profiles = self.request.user.user_profile.follow.all()
         return following_profiles
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                "status": "true",
+                "message": "data listed successfully.",
+                "data": serializer.data
+            }
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
 
 
 class SendFriendRequest(GenericAPIView):
@@ -277,12 +325,31 @@ class SendFriendRequest(GenericAPIView):
         return HttpResponse(f"You can't send a friend request to yourself, {self.request.user.email}")
 
 
+
+
+
 class ShowPendingSentFriendRequests(ListAPIView):
     serializer_class = FriendRequestSerializer
 
     def get_queryset(self):
         sent_requests = FriendRequest.objects.filter(status="pending", sender_id=self.request.user.uuid)
         return sent_requests
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                "status": "true",
+                "message": "data listed successfully.",
+                "data": serializer.data
+            }
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
 
 
 # GET: List all open friend requests from others
@@ -294,6 +361,22 @@ class ShowPendingReceivedFriendRequests(ListAPIView):
         received_requests = FriendRequest.objects.filter(status="pending", receiver_id=self.request.user.uuid)
         return received_requests
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                "status": "true",
+                "message": "data listed successfully.",
+                "data": serializer.data
+            }
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
+
 
 # GET: List all my pending friend requests
 class ShowPendingSentFriendRequests(ListAPIView):
@@ -303,6 +386,22 @@ class ShowPendingSentFriendRequests(ListAPIView):
     def get_queryset(self):
         sent_requests = FriendRequest.objects.filter(status="pending", sender_id=self.request.user.uuid)
         return sent_requests
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response({
+                "status": "true",
+                "message": "data listed successfully.",
+                "data": serializer.data
+            }
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({"status": "true", "message": "data listed successfully.", "data": serializer.data})
 
 
 class AcceptFriendRequest(GenericAPIView):
