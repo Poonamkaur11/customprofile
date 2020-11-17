@@ -159,10 +159,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 2
 }
-#REST_FRAMEWORK = {
+# REST_FRAMEWORK = {
 #    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 #    'PAGE_SIZE': 2
-#}
+# }
 
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -195,6 +195,37 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # existing backend
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+'''LOGGING = {
+    'version': 1,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': './logs/debug.log',
+            'formatter': 'simple',
+        },
+        'file2': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': './logs/INFO.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'file2'],
+            'level': 'DEBUG',
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
 
-
-
+}'''

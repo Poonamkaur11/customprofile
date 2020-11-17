@@ -41,7 +41,10 @@ from filters.mixins import (
     FiltersMixin,
 )
 from url_filter.integrations.drf import DjangoFilterBackend
+import logging
 
+logger = logging.getLogger('django')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s ::%(levelname)s ::%(message)s')
 
 def mail(request):
     # return HttpResponse(request.GET)
@@ -72,6 +75,7 @@ class UserViewSet(BaseViewSet):
     search_fields = ('name', 'email', 'created_at')
     filter_fields = ('name', 'email',)
     ordering_fields = "__all__"
+    logger.info('Users')
 
 
 class ProfileViewSet(BaseViewSet):
@@ -88,6 +92,7 @@ class ProfileViewSet(BaseViewSet):
     queryset = Profile.objects.all()
     model_class = Profile
     serializer_class = ProfileSerializer
+    logger.info('Profile')
 
 
 class EducationViewSet(BaseViewSet):
@@ -101,6 +106,7 @@ class EducationViewSet(BaseViewSet):
     pagination_class = TwoItemsSetPagination
     ordering_fields = "__all__"
     head = "education"
+    logger.info('Education')
 
 
 class ExperienceViewSet(BaseViewSet):
@@ -114,6 +120,7 @@ class ExperienceViewSet(BaseViewSet):
     serializer_class = ExperienceSerializer
     pagination_class = TwoItemsSetPagination
     head = "experience"
+    logger.info('Experience')
 
 
 class FeedViewSet(BaseViewSet):
@@ -127,6 +134,7 @@ class FeedViewSet(BaseViewSet):
     search_fields = ('feed', 'created_at')
     ordering_fields = "__all__"
     head = "feed"
+    logger.info('Feed')
 
 
 class SkillsViewSet(BaseViewSet):
@@ -140,6 +148,7 @@ class SkillsViewSet(BaseViewSet):
     serializer_class = SkillsSerializer
     pagination_class = TwoItemsSetPagination
     head = "Skills"
+    logger.info('Skills')
 
 
 class Follow(UpdateAPIView):
@@ -311,6 +320,7 @@ class SendFriendRequest(GenericAPIView):
         receiver = User.objects.get(uuid=receiver_id)
         if self.request.user.uuid != receiver.uuid:
             friend_request, created = FriendRequest.objects.get_or_create(sender=self.request.user, receiver=receiver)
+
             if created:
                 sendmail = EmailMessage(
                     subject="New friend request",
@@ -323,9 +333,6 @@ class SendFriendRequest(GenericAPIView):
             else:
                 return HttpResponse(f"You have already sent a friend request to {receiver.email}")
         return HttpResponse(f"You can't send a friend request to yourself, {self.request.user.email}")
-
-
-
 
 
 class ShowPendingSentFriendRequests(ListAPIView):
